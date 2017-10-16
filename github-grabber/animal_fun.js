@@ -1,5 +1,35 @@
 const fs = require("fs");
 const http = require("http");
+const querystring = require("querystring");
+
+const server = http.createServer((req, res) => {
+  query = querystring.parse(req.url.slice(1));
+
+  let animals = [];
+
+  fs.readFile("./animals.txt", "utf-8", (err, data) => {
+    if (err) {
+      console.log(err);
+      res.write("error");
+    } else {
+      if (query.letter === "") {
+        res.write(data);
+      } else {
+        let dataArr = data.split("\n");
+        dataArr.forEach(animal => {
+          if (animal[0].toLowerCase() === query.letter) {
+            animals.push(animal);
+          }
+        });
+        res.write(animals.join("\n"));
+      }
+    }
+
+    res.end();
+  });
+});
+
+server.listen(8001, () => console.log("I'm listening on port 8000!"));
 
 // fs.readFile("./animals.txt", "utf-8", (err, data) => {
 //   if (err) {
@@ -40,10 +70,3 @@ const http = require("http");
 // const writeAnimals = (letter, animals) => {
 //   fs.writeFile(`./${letter}_animals.txt`, animals);
 // };
-
-const server = http.createServer((req, res) => {
-  res.write("hello world");
-  res.end();
-});
-
-server.listen(8000, () => console.log("I'm listening on port 8000!"));
