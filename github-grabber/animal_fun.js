@@ -17,17 +17,25 @@ const fs = require("fs");
 //     console.log("file successfully created");
 //   }
 // });
-// let letter = process.args[2];
 
-// fs.readFile(".amimals.txt", "utf-8", (err, data) => {
-//   if (err) {
-//     console.log(err);
-//     return;
-//   } else {
-//     writeAnimals(letter);
-//   }
-// });
+let letter = process.argv[2];
+let animals = [];
 
-// const writeAnimals = letter => {
-//   fs.writeFile(`${letter}_animals.txt`);
-// };
+fs.readFile("./animals.txt", (err, data) => {
+  if (err) {
+    console.log(err);
+    return;
+  } else {
+    dataArr = data.toString().split("\n");
+    dataArr.forEach(animal => {
+      if (animal[0].toLowerCase() === letter) {
+        animals.push(animal);
+      }
+    });
+    writeAnimals(letter, animals.join("\n"));
+  }
+});
+
+const writeAnimals = (letter, animals) => {
+  fs.writeFile(`./${letter}_animals.txt`, animals);
+};
