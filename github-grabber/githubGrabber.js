@@ -1,13 +1,18 @@
 fs = require("fs");
 https = require("https");
 http = require("http");
-querystring = require("querystring");
+qs = require("querystring");
 
 const githubServer = http.createServer((req, res) => {
   if (req.method === "POST") {
-    res.end("I'm a post request!");
-  } else {
-    res.end("Danger, not a post request!");
+    let body = "";
+    req.on("data", data => {
+      body += data;
+    });
+    req.on("end", () => {
+      const username = qs.parse(body).username;
+      res.end(username);
+    });
   }
 });
 
